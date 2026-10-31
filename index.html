@@ -6,13 +6,18 @@
   <meta name="theme-color" content="#0a1323">
   <meta name="description" content="Simulatore didattico di probabilità calcistiche con due distribuzioni di Poisson indipendenti e parametri manuali.">
   <title>TOPKILLER Pocket — Simulatore didattico</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="TOPKILLER">
+  <script type="module" src="./js/pwa.js"></script>
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./js/app.js"></script>
 </head>
 <body>
   <aside class="disclaimer">Simulatore didattico: parametri manuali, non previsioni reali</aside>
   <div class="shell">
-    <header class="brand"><a href="./" aria-label="TOPKILLER Pocket, inizio"><span class="brand-mark" aria-hidden="true">T<span>↗</span></span><span>TOPKILLER <b>Pocket</b></span></a><span class="version">V0.1</span></header>
+    <header class="brand"><a href="./" aria-label="TOPKILLER Pocket, inizio"><span class="brand-mark" aria-hidden="true">T<span>↗</span></span><span>TOPKILLER <b>Pocket</b></span></a><span class="version">V0.2</span></header>
     <main>
       <section class="intro"><p class="eyebrow">IL CALCIO, IN PROBABILITÀ</p><h1>Ogni scenario<br>parte da due numeri.</h1><p>Imposta i gol attesi. Esplora le probabilità di un modello matematico, in tempo reale.</p></section>
       <div class="workspace">
@@ -32,7 +37,8 @@
       <section class="panel matrix-panel" aria-labelledby="matrix-title"><div class="section-heading"><h2 id="matrix-title">Mappa dei risultati</h2><span class="tag">DA 0–0 A 5–5</span></div><p class="muted">Righe: gol casa · colonne: gol ospite. Il verde più intenso indica una probabilità maggiore.</p><div class="matrix-wrap"><table id="matrix"><caption class="sr-only">Probabilità dei risultati esatti: gol casa per riga e gol ospite per colonna</caption></table></div><p id="matrix-tail" class="muted small"></p></section>
       <details class="panel method"><summary>Come funziona il modello</summary><p>Due distribuzioni di Poisson indipendenti descrivono i gol di casa e ospite. Per ciascuna squadra: P(k) = e<sup>−λ</sup> λ<sup>k</sup> / k!. La probabilità di un risultato esatto è il prodotto delle due probabilità.</p><p>I calcoli includono anche risultati oltre 5 gol. La matrice mostra solo una parte dei risultati, senza rinormalizzarla. Le percentuali sono arrotondate a due decimali e le somme visualizzate possono differire lievemente dal 100%.</p><p>I nomi sono etichette: non cambiano i calcoli. I parametri manuali non incorporano dati reali, forma o dipendenze tra le squadre.</p></details>
     </main>
-    <footer>TOPKILLER Pocket <span>Matematica da esplorare. V0.1</span></footer>
+    <p id="offline-status" class="storage" role="status"></p>
+    <footer>TOPKILLER Pocket <span>Matematica da esplorare. V0.2</span></footer>
   </div>
   <noscript><p class="panel">Attiva JavaScript nel browser per usare il simulatore.</p></noscript>
 </body>

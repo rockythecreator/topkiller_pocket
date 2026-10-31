@@ -1,4 +1,4 @@
-# TOPKILLER Pocket · V0.1
+# TOPKILLER Pocket · V0.2
 
 Piccola web app didattica per esplorare probabilità calcistiche con parametri manuali. HTML, CSS e JavaScript nativi: nessun framework, backend, API esterna, font remoto o CDN. Nessun dato calcistico reale, quota o consiglio di scommessa.
 
@@ -110,3 +110,97 @@ Se Chromium è già installato, puoi indicarlo con `CHROMIUM_PATH=/percorso/chro
 - `tests/browser.cjs`: prove browser con server HTTP locale temporaneo.
 
 Non serve una compilazione. `work/` è ignorata da Git ed è riservata alle prove temporanee.
+
+
+## V0.2 · Installazione e utilizzo offline
+
+La V0.2 aggiunge una PWA senza dipendenze nell’app. Il motore matematico e i dati
+salvati della V0.1 restano invariati. Richiede HTTPS (GitHub Pages) o localhost
+per le prove di sviluppo. Non è necessario installarla per usarla offline nel browser.
+
+### Primo caricamento
+
+Con Internet attivo, apri il sito e attendi il messaggio **«App pronta per l’uso
+offline su questo browser»** sotto i contenuti. Non basta vedere la prima pagina:
+il browser deve aver scaricato tutte le risorse. Se questa preparazione fallisce,
+l’app continua a funzionare online e puoi riprovare ricaricando con Internet attivo.
+Una prima visita senza rete non può funzionare.
+
+### iPhone e iPad
+
+1. Apri il sito in Safari, con Internet attivo, e attendi il messaggio di disponibilità offline.
+2. Tocca Condividi → **Aggiungi alla schermata Home** → Aggiungi.
+3. Apri l’icona TOPKILLER dalla Home e attendi nuovamente la conferma offline.
+   L’app installata e Safari possono avere archivi separati: verifica lo scenario nell’app installata.
+4. Attiva la modalità aereo, chiudi e riapri l’app dalla Home. Verifica slider,
+   nomi, risultati e ripristino. Riattiva la connessione al termine della prova.
+
+### Android
+
+1. Apri il sito in Chrome con Internet attivo e attendi la conferma offline.
+2. Nel menu ⋮ scegli **Installa app** oppure **Aggiungi a schermata Home**
+   (la voce dipende dal browser e dalla versione).
+3. Apri l’icona, modifica uno scenario, poi attiva la modalità aereo.
+4. Chiudi e riapri l’app e controlla risultati e scenario salvato. Riattiva la rete.
+
+Su desktop Chrome/Edge compatibili, usa l’icona di installazione nella barra degli
+indirizzi o il menu del browser. La proposta automatica di installazione non è
+garantita su ogni browser; non viene aggiunto un pulsante di installazione artificiale.
+
+### Aggiornamenti e conservazione dei dati
+
+Riapri l’app con Internet attivo per scaricare eventuali aggiornamenti. Il controllo
+avviene anche tornando all’app dopo averla lasciata in background. Quando compare
+**«Aggiornamento pronto»**, chiudi tutte le finestre e le schede del sito, compresa
+l’app installata, poi riapri. Un semplice ricaricamento con altre finestre aperte può
+mantenere attiva la versione precedente. Nessun aggiornamento forza il ricaricamento
+durante l’uso. Il nuovo worker entra in funzione solo dopo il download completo;
+un aggiornamento incompleto lascia disponibile la versione precedente.
+
+La cache contiene esclusivamente HTML, CSS, JavaScript, manifest e icone dell’app,
+nel percorso `/topkiller_pocket/`. Le cache delle vecchie versioni dell’app vengono
+eliminate all’attivazione della nuova. Il service worker non tocca localStorage,
+cache di altre app, richieste esterne o altri percorsi dello stesso sito.
+Il browser può comunque eliminare cache e dati per mancanza di spazio o per una
+pulizia manuale: in quel caso serve una nuova visita online. La modalità privata
+può limitare installazione, persistenza e service worker.
+
+Per ogni futura modifica a una risorsa dell’app, incrementare `VERSION` in `sw.js`
+nello stesso rilascio: questo garantisce un download completo della nuova versione.
+Non aggiungere `skipWaiting()` senza gestire la coerenza fra le pagine già aperte
+e i nuovi moduli. Non aggiungere dati utente o risorse esterne all’elenco `ASSETS`.
+
+### Verifiche V0.2
+
+Dalla cartella del repository, con Playwright disponibile come strumento di sviluppo:
+
+```sh
+npm test
+mkdir -p work
+CHROMIUM_PATH=/usr/bin/chromium node tests/browser.cjs
+CHROMIUM_PATH=/usr/bin/chromium node tests/pwa.cjs
+```
+
+`CHROMIUM_PATH` può essere adattato al percorso del proprio Chromium. Per la suite
+V0.1 si può anche ometterlo quando è installato il browser Playwright.
+La suite PWA avvia un server locale temporaneo; non pubblica nulla e non modifica
+file dell’app. Serve correttamente manifest e icone con i rispettivi MIME type.
+
+Eseguiti in ambiente Linux con Chromium headless per questa versione:
+
+- Tutta la suite matematica/settings V0.1, comprese 109.561 coppie di slider.
+- Tutta la suite browser V0.1: viewport 320, 390, 430 e 1440 pixel,
+  persistenza, ripristino, nomi come testo e localStorage bloccato.
+- Manifest, dimensioni PNG 192/512/180, registrazione e scope corretti.
+- Primo caricamento online, chiusura e riapertura offline, modifica degli slider
+  offline, persistenza dopo ricaricamento e ripristino della connessione.
+- Aggiornamento incompleto rifiutato, aggiornamento successivo attivato dopo la
+  chiusura, eliminazione della vecchia cache e funzionamento offline della nuova.
+- Scenario e cache estranee preservati; pagina fuori scope non controllata.
+- Confronto Git: `js/math.js` e i test matematici V0.1 invariati rispetto a `main`.
+
+Da provare manualmente: installazione reale dalla Home su iPhone/Safari e Android,
+comportamento del sistema operativo alla chiusura, desktop installato, WebKit e
+versione effettivamente distribuita su GitHub Pages. Le prove Chromium non
+certificano il comportamento di dispositivi fisici o Safari. Questa consegna non
+esegue merge né pubblicazione del sito.
