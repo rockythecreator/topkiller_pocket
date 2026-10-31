@@ -1,5 +1,5 @@
 /* Bump VERSION whenever any shell resource changes. Never cache user data. */
-const VERSION = 'v0.2.0';
+const VERSION = 'v0.2.1';
 const PREFIX = 'topkiller-pocket-shell-';
 const CACHE = PREFIX + VERSION;
 const BASE = '/topkiller_pocket/';
@@ -40,5 +40,34 @@ self.addEventListener('fetch', event => {
     // Serve a single version of HTML and modules, including while online.
     const cached = await cache.match(navigation ? BASE : url.pathname);
     return cached || fetch(event.request);
+  })());
+});
+
+// Only the active worker audits its own shell. Never repair from a different release.
+self.addEventListener('message', event => {
+  if (event.data?.type !== 'CHECK_OFFLINE' || !event.ports[0]) return;
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    const missing = [];
+    for (const url of ASSETS) {
+      const response = await cache.match(url);
+      if (!response?.ok) missing.push(url);
+    }
+    try {
+      if (missing.length) {
+        const worker = await fetch(new Request(BASE + 'sw.js', { cache: 'no-store' }));
+        if (!worker.ok || !(await worker.text()).includes("const VERSION = '" + VERSION + "';")) {
+          throw new Error('Release diversa: attendere aggiornamento completo');
+        }
+        // addAll rejects failed responses; existing entries are left untouched.
+        await cache.addAll(missing.map(url => new Request(url, { cache: 'reload' })));
+      }
+      for (const url of ASSETS) {
+        if (!(await cache.match(url))?.ok) throw new Error('Cache incompleta');
+      }
+      event.ports[0].postMessage({ ready: true });
+    } catch {
+      event.ports[0].postMessage({ ready: false });
+    }
   })());
 });
