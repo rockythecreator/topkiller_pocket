@@ -1,4 +1,4 @@
-# TOPKILLER Pocket · V0.2
+# TOPKILLER Pocket · V0.2.1
 
 Piccola web app didattica per esplorare probabilità calcistiche con parametri manuali. HTML, CSS e JavaScript nativi: nessun framework, backend, API esterna, font remoto o CDN. Nessun dato calcistico reale, quota o consiglio di scommessa.
 
@@ -204,3 +204,8 @@ comportamento del sistema operativo alla chiusura, desktop installato, WebKit e
 versione effettivamente distribuita su GitHub Pages. Le prove Chromium non
 certificano il comportamento di dispositivi fisici o Safari. Questa consegna non
 esegue merge né pubblicazione del sito.
+
+## Patch V0.2.1
+
+Correzioni di avvio, conferma offline, accessibilità e versione: vedere [report e test della patch](PATCH_REPORT.md).
+La regressione dedicata si esegue con `node tests/patch.cjs`, con Playwright e Chromium disponibili come strumenti di sviluppo.

@@ -12,20 +12,34 @@
   <meta name="apple-mobile-web-app-title" content="TOPKILLER">
   <script type="module" src="./js/pwa.js"></script>
   <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./js/app.js"></script>
+  <script type="module">
+    // No timeout: a slow module is not a failed module. Rejections stay observable.
+    try {
+      await import('./js/app.js');
+      window.topkillerInitialized = true;
+      window.dispatchEvent(new Event('topkiller-ready'));
+    } catch (error) {
+      document.getElementById('startup-error').hidden = false;
+      throw error;
+    }
+  </script>
 </head>
 <body>
   <aside class="disclaimer">Simulatore didattico: parametri manuali, non previsioni reali</aside>
   <div class="shell">
-    <header class="brand"><a href="./" aria-label="TOPKILLER Pocket, inizio"><span class="brand-mark" aria-hidden="true">T<span>↗</span></span><span>TOPKILLER <b>Pocket</b></span></a><span class="version">V0.2</span></header>
+    <header class="brand"><a href="./" aria-label="TOPKILLER Pocket, inizio"><span class="brand-mark" aria-hidden="true">T<span>↗</span></span><span>TOPKILLER <b>Pocket</b></span></a><span class="version">V0.2.1</span></header>
     <main>
+      <div id="startup-error" class="panel" role="alert" hidden>
+        <p>Il simulatore non è stato caricato. Riprova; se sei offline, riconnettiti a Internet.</p>
+        <button type="button" onclick="location.reload()">Riprova</button>
+      </div>
       <section class="intro"><p class="eyebrow">IL CALCIO, IN PROBABILITÀ</p><h1>Ogni scenario<br>parte da due numeri.</h1><p>Imposta i gol attesi. Esplora le probabilità di un modello matematico, in tempo reale.</p></section>
       <div class="workspace">
         <section class="panel controls" aria-labelledby="parameters-title">
           <div class="section-heading"><h2 id="parameters-title">Il tuo scenario</h2><span class="tag">PARAMETRI MANUALI</span></div>
           <p class="muted">λ indica il numero medio di gol nel modello.</p>
-          <div class="team"><label for="home-name" class="eyebrow">01 / CASA</label><input id="home-name" maxlength="40" autocomplete="off" value="Squadra Casa"><div class="lambda-label"><label for="home-lambda">Gol attesi · λ</label><output id="home-value" for="home-lambda">1,45</output></div><input id="home-lambda" type="range" min="0.20" max="3.50" step="0.01" value="1.45"><div class="range-limits"><span>0,20</span><span>3,50</span></div></div>
-          <div class="team away-team"><label for="away-name" class="eyebrow">02 / OSPITE</label><input id="away-name" maxlength="40" autocomplete="off" value="Squadra Ospite"><div class="lambda-label"><label for="away-lambda">Gol attesi · λ</label><output id="away-value" for="away-lambda">1,10</output></div><input id="away-lambda" type="range" min="0.20" max="3.50" step="0.01" value="1.10"><div class="range-limits"><span>0,20</span><span>3,50</span></div></div>
+          <div class="team"><label for="home-name" class="eyebrow">01 / CASA</label><input id="home-name" maxlength="40" autocomplete="off" value="Squadra Casa"><div class="lambda-label"><label for="home-lambda">Gol attesi · λ</label><output id="home-value" for="home-lambda">1,45</output></div><input id="home-lambda" aria-label="Gol attesi squadra casa" type="range" min="0.20" max="3.50" step="0.01" value="1.45"><div class="range-limits"><span>0,20</span><span>3,50</span></div></div>
+          <div class="team away-team"><label for="away-name" class="eyebrow">02 / OSPITE</label><input id="away-name" maxlength="40" autocomplete="off" value="Squadra Ospite"><div class="lambda-label"><label for="away-lambda">Gol attesi · λ</label><output id="away-value" for="away-lambda">1,10</output></div><input id="away-lambda" aria-label="Gol attesi squadra ospite" type="range" min="0.20" max="3.50" step="0.01" value="1.10"><div class="range-limits"><span>0,20</span><span>3,50</span></div></div>
           <button id="reset" type="button">↺ Ripristina scenario iniziale</button><p id="storage-status" class="storage" role="status"></p>
         </section>
         <div class="results" aria-label="Risultati della simulazione">
@@ -38,7 +52,7 @@
       <details class="panel method"><summary>Come funziona il modello</summary><p>Due distribuzioni di Poisson indipendenti descrivono i gol di casa e ospite. Per ciascuna squadra: P(k) = e<sup>−λ</sup> λ<sup>k</sup> / k!. La probabilità di un risultato esatto è il prodotto delle due probabilità.</p><p>I calcoli includono anche risultati oltre 5 gol. La matrice mostra solo una parte dei risultati, senza rinormalizzarla. Le percentuali sono arrotondate a due decimali e le somme visualizzate possono differire lievemente dal 100%.</p><p>I nomi sono etichette: non cambiano i calcoli. I parametri manuali non incorporano dati reali, forma o dipendenze tra le squadre.</p></details>
     </main>
     <p id="offline-status" class="storage" role="status"></p>
-    <footer>TOPKILLER Pocket <span>Matematica da esplorare. V0.2</span></footer>
+    <footer>TOPKILLER Pocket <span>Matematica da esplorare. V0.2.1</span></footer>
   </div>
   <noscript><p class="panel">Attiva JavaScript nel browser per usare il simulatore.</p></noscript>
 </body>
