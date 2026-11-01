@@ -1,4 +1,4 @@
-# TOPKILLER Pocket · V0.2.1
+# TOPKILLER Pocket · V0.3.0
 
 Piccola web app didattica per esplorare probabilità calcistiche con parametri manuali. HTML, CSS e JavaScript nativi: nessun framework, backend, API esterna, font remoto o CDN. Nessun dato calcistico reale, quota o consiglio di scommessa.
 
@@ -209,3 +209,94 @@ esegue merge né pubblicazione del sito.
 
 Correzioni di avvio, conferma offline, accessibilità e versione: vedere [report e test della patch](PATCH_REPORT.md).
 La regressione dedicata si esegue con `node tests/patch.cjs`, con Playwright e Chromium disponibili come strumenti di sviluppo.
+
+
+## V0.3 · Laboratorio Monte Carlo
+
+Sotto i risultati Poisson trovi **Monte Carlo — Esperimento sul modello**.
+Scegli 1.000, 10.000 (iniziale) o 100.000 partite e premi **Simula**.
+Il pannello acquisisce i valori effettivi degli slider all’avvio e li mostra
+insieme ai nomi delle squadre. **Annulla** scarta l’esperimento, senza mostrare
+risultati parziali come definitivi. Cambiare lambda o ripristinare lo scenario
+annulla e invalida il confronto; cambiare solo un nome aggiorna le etichette.
+Lo scenario salvato usa sempre `topkiller-pocket:v0.1`, con lo stesso schema.
+I risultati Monte Carlo non vengono salvati in localStorage.
+
+Per ogni mercato sono mostrati probabilità Poisson, frequenza simulata,
+differenza in punti percentuali e intervallo marginale Wilson al 95%.
+La differenza si calcola sui valori non arrotondati. I cinque risultati esatti
+prioritari sono scelti dal modello Poisson prima di osservare il campione;
+puoi espandere tutti gli altri risultati osservati, compresi quelli oltre cinque gol.
+Nessun gol viene escluso o rinormalizzato.
+
+Monte Carlo usa gli stessi lambda e le stesse ipotesi di Poisson: **non è una
+previsione indipendente o più accurata**. Gli intervalli descrivono la variabilità
+numerica del campionamento, non l’incertezza dei lambda o l’accuratezza su partite
+reali. La copertura è marginale, non simultanea per tutti gli eventi.
+Più partite riducono generalmente la variabilità, senza migliorare il modello.
+Come orientamento teorico, vicino al 50% le semiampiezze normali al 95% sono
+circa 3,10 / 0,98 / 0,31 punti per 1.000 / 10.000 / 100.000 partite:
+queste cifre non sono misure delle prestazioni né risultati di test.
+
+### Esecuzione e casualità
+
+Il percorso principale è un Web Worker module locale, con conferma dell’avvio.
+Se non si costruisce, non si carica o non conferma entro due secondi, il calcolo
+riparte da zero sul thread principale in blocchi di 256 partite con `setTimeout`.
+Il worker usa blocchi di 1.024 partite. L’avanzamento visivo è aggiornato circa
+ogni 125 ms, quando il calcolo dura abbastanza; gli annunci accessibili sono
+limitati alle decine percentuali. Solo una simulazione può essere attiva.
+Un identificatore distingue le esecuzioni e fa ignorare i messaggi obsoleti.
+Passare in background interrompe esplicitamente il calcolo: al ritorno va riavviato.
+Questa scelta evita falsi completamenti in caso di sospensione su iOS.
+
+La modalità normale usa `crypto.getRandomValues()` con buffer di 4.096 interi.
+Un errore della sorgente viene mostrato senza sostituirla con un generatore diverso.
+Per i test è disponibile PCG-XSH-RR 64/32, inizializzazione PCG di riferimento,
+seed intero sicuro non negativo e stream 54. La conversione è sempre
+`(uint32 + 0.5) / 2^32`, quindi l’uniforme è in (0,1).
+Worker e fallback condividono campionatore, consumo dei numeri casuali e conteggi.
+Il seed non è esposto nella UI e non viene fissato nella modalità normale.
+
+### Test e report
+
+Oltre ai comandi di regressione già descritti:
+
+```sh
+npm test
+CHROMIUM_PATH=/usr/bin/chromium node tests/browser.cjs
+node tests/pwa.cjs
+node tests/patch.cjs
+node tests/mc-browser.cjs
+```
+
+Le suite browser richiedono lo strumento di sviluppo Playwright già presente
+nell’ambiente; non è una dipendenza dell’app e non sono state aggiunte dipendenze.
+`tests/mc-browser.cjs` usa il commit base Git V0.2.1 per provare un vero aggiornamento:
+non usare un clone che omette quell’oggetto Git per tale verifica.
+La suite registra le prestazioni osservate senza trasformare gli obiettivi iPhone
+in risultati garantiti. Dettagli, budget statistico e limiti: [V03_REPORT.md](V03_REPORT.md).
+
+### Offline, aggiornamento e rollback
+
+Attendi **App pronta per l’uso offline** prima di disconnettere la rete.
+La cache `topkiller-pocket-shell-v0.3.0` include tutti i nuovi moduli e il worker.
+L’aggiornamento continua ad attendere la chiusura di tutte le finestre dell’app,
+senza attivazione forzata durante una sessione. I dati salvati precedenti restano validi.
+
+Per un eventuale rollback, preparare il comportamento V0.2.1 con un identificatore
+di rilascio successivo (per esempio 0.3.1), nuova cache e lista delle risorse coerente.
+Pubblicarlo soltanto con autorizzazione separata. Il dispositivo deve tornare online,
+scaricare il rilascio completo e chiudere le vecchie finestre prima di usarlo.
+**Un rollback immediato mentre il dispositivo è offline non è garantito.**
+
+### Prove manuali su iPhone 16
+
+Installare dalla Home di Safari dopo il caricamento completo, provare in modalità
+aereo tutti e tre i volumi, annullamento, cambio lambda, rinomina, reset e ritorno
+dal background. Usare VoiceOver, testo ingrandito e Riduci movimento. Misurare
+sul dispositivo reale: durata di 100.000 partite (obiettivo circa 5 secondi),
+annullamento in primo piano (200 ms), task principali (50 ms) e avanzamento
+(circa 100–250 ms). Annotare iOS, batteria/risparmio energetico, temperatura e
+modalità worker/fallback. Documentare anche le soglie non raggiunte.
+Le prove Chromium a 393 px non sostituiscono queste verifiche fisiche.

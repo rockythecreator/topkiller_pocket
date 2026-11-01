@@ -11,7 +11,7 @@ const server = http.createServer(async (req, res) => {
     if (relative === 'js/app.js' && missing) { res.writeHead(404).end(); return; }
     if (relative === 'js/app.js' && slow) await new Promise(r => setTimeout(r, 1500));
     let data = await fs.readFile(path.join(root, relative));
-    if (relative === 'sw.js' && otherRelease) data = Buffer.from(data.toString().replace(/v0\.2\.\d/g, 'v9.0.0'));
+    if (relative === 'sw.js' && otherRelease) data = Buffer.from(data.toString().replace(/const VERSION = '[^']+'/, "const VERSION = 'v9.0.0'"));
     if (relative === 'js/math.js' && mathError) data = Buffer.from(data.toString().replace('export function simulate(homeLambda, awayLambda) {', 'export function simulate(homeLambda, awayLambda) { throw new RangeError("regression mathematical failure");'));
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('Content-Type', relative.endsWith('.js') ? 'text/javascript' : relative.endsWith('.css') ? 'text/css' : relative.endsWith('.webmanifest') ? 'application/manifest+json' : relative.endsWith('.png') ? 'image/png' : 'text/html');
@@ -84,9 +84,9 @@ server.listen(0, '127.0.0.1', async () => {
       await c.setOffline(true); await p.reload(); await p.waitForSelector('#matrix tbody td');
     });
     await test('versione package interfaccia e cache', async p => {
-      assert.equal(JSON.parse(await fs.readFile(path.join(root,'package.json'))).version,'0.2.1');
-      await p.goto(base); assert.equal(await p.locator('.version').innerText(),'V0.2.1');
-      assert.match(await fs.readFile(path.join(root,'sw.js'),'utf8'), /const VERSION = 'v0\.2\.1'/);
+      assert.equal(JSON.parse(await fs.readFile(path.join(root,'package.json'))).version,'0.3.0');
+      await p.goto(base); assert.equal(await p.locator('.version').innerText(),'V0.3.0');
+      assert.match(await fs.readFile(path.join(root,'sw.js'),'utf8'), /const VERSION = 'v0\.3\.0'/);
     });
   } finally { await browser.close(); server.close(); process.exitCode=failures?1:0; }
 });
