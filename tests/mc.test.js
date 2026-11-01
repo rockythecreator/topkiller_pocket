@@ -112,3 +112,13 @@ test('preplanned statistical family: 18 runs, 756 Bernstein comparisons, alpha t
   }
   assert.equal(comparisons,756);
 });
+
+test('protected mathematical blob and previous settings schema remain unchanged', async () => {
+  const {readFile}=await import('node:fs/promises');
+  const {createHash}=await import('node:crypto');
+  const data=await readFile(new URL('../js/math.js',import.meta.url));
+  const hash=createHash('sha1').update(`blob ${data.length}\0`).update(data).digest('hex');
+  assert.equal(hash,'70427602445a7145577af4cf89cbfe2f247675f6');
+  const settings=await readFile(new URL('../js/settings.js',import.meta.url),'utf8');
+  assert(settings.includes('topkiller-pocket:v0.1'));
+});

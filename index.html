@@ -28,7 +28,7 @@
 <body>
   <aside class="disclaimer">Simulatore didattico: parametri manuali, non previsioni reali</aside>
   <div class="shell">
-    <header class="brand"><a href="./" aria-label="TOPKILLER Pocket, inizio"><span class="brand-mark" aria-hidden="true">T<span>↗</span></span><span>TOPKILLER <b>Pocket</b></span></a><span class="version">V0.2.1</span></header>
+    <header class="brand"><a href="./" aria-label="TOPKILLER Pocket, inizio"><span class="brand-mark" aria-hidden="true">T<span>↗</span></span><span>TOPKILLER <b>Pocket</b></span></a><span class="version">V0.3.0</span></header>
     <main>
       <div id="startup-error" class="panel" role="alert" hidden>
         <p>Il simulatore non è stato caricato. Riprova; se sei offline, riconnettiti a Internet.</p>
@@ -50,7 +50,7 @@
         </div>
       </div>
       <section class="panel matrix-panel" aria-labelledby="matrix-title"><div class="section-heading"><h2 id="matrix-title">Mappa dei risultati</h2><span class="tag">DA 0–0 A 5–5</span></div><p class="muted">Righe: gol casa · colonne: gol ospite. Il verde più intenso indica una probabilità maggiore.</p><div class="matrix-wrap"><table id="matrix"><caption class="sr-only">Probabilità dei risultati esatti: gol casa per riga e gol ospite per colonna</caption></table></div><p id="matrix-tail" class="muted small"></p></section>
-      <section id="mc-panel" class="panel mc-panel" aria-labelledby="mc-title" aria-busy="false">
+      <section id="mc-panel" class="panel mc-panel" aria-labelledby="mc-title">
         <h2 id="mc-title">Monte Carlo — Esperimento sul modello</h2>
         <p class="muted">Stessi lambda e stesse ipotesi di Poisson: un esperimento casuale, non una previsione indipendente o più accurata.</p>
         <label for="mc-volume">Partite da simulare</label>
@@ -61,12 +61,12 @@
         <progress id="mc-progress" max="10000" value="0">0%</progress>
         <p id="mc-status" role="status" aria-live="polite">Pronto per un esperimento.</p>
         <p class="muted small">Gli intervalli marginali Wilson al 95% descrivono la variabilità delle simulazioni. Non includono l’incertezza dei lambda, non misurano l’accuratezza su partite reali e non garantiscono copertura simultanea di tutti gli eventi. Più simulazioni riducono generalmente la variabilità numerica, senza migliorare automaticamente il modello predittivo.</p>
-        <div id="mc-results"></div>
+        <div id="mc-results" aria-busy="false"></div>
       </section>
       <details class="panel method"><summary>Come funziona il modello</summary><p>Due distribuzioni di Poisson indipendenti descrivono i gol di casa e ospite. Per ciascuna squadra: P(k) = e<sup>−λ</sup> λ<sup>k</sup> / k!. La probabilità di un risultato esatto è il prodotto delle due probabilità.</p><p>I calcoli includono anche risultati oltre 5 gol. La matrice mostra solo una parte dei risultati, senza rinormalizzarla. Le percentuali sono arrotondate a due decimali e le somme visualizzate possono differire lievemente dal 100%.</p><p>I nomi sono etichette: non cambiano i calcoli. I parametri manuali non incorporano dati reali, forma o dipendenze tra le squadre.</p></details>
     </main>
     <p id="offline-status" class="storage" role="status"></p>
-    <footer>TOPKILLER Pocket <span>Matematica da esplorare. V0.2.1</span></footer>
+    <footer>TOPKILLER Pocket <span>Matematica da esplorare. V0.3.0</span></footer>
   </div>
   <noscript><p class="panel">Attiva JavaScript nel browser per usare il simulatore.</p></noscript>
 </body>

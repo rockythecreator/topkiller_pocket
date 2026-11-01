@@ -51,7 +51,7 @@ if (typeof document !== 'undefined' && $('mc-panel')) {
   const names = () => `${$('home-name').value || 'Squadra Casa'} / ${$('away-name').value || 'Squadra Ospite'}`;
   function busy(value) {
     $('mc-start').disabled=value; $('mc-volume').disabled=value;
-    $('mc-cancel').hidden=!value; $('mc-panel').setAttribute('aria-busy',String(value));
+    $('mc-cancel').hidden=!value; $('mc-results').setAttribute('aria-busy',String(value));
   }
   function cancel(message) {
     serial++; active?.cancel(); active=null; busy(false);

@@ -1,11 +1,12 @@
 /* Bump VERSION whenever any shell resource changes. Never cache user data. */
-const VERSION = 'v0.2.1';
+const VERSION = 'v0.3.0';
 const PREFIX = 'topkiller-pocket-shell-';
 const CACHE = PREFIX + VERSION;
 const BASE = '/topkiller_pocket/';
 const ASSETS = [BASE, ...[
   'index.html', 'styles.css', 'js/app.js', 'js/math.js', 'js/settings.js',
-  'js/pwa.js', 'manifest.webmanifest', 'icons/icon-192.png',
+  'js/pwa.js', 'js/mc-rng.js', 'js/monte-carlo.js', 'js/mc-statistics.js',
+  'js/mc-worker.js', 'js/mc-ui.js', 'manifest.webmanifest', 'icons/icon-192.png',
   'icons/icon-512.png', 'icons/apple-touch-icon.png',
 ].map(path => BASE + path)];
 self.addEventListener('install', event => {
