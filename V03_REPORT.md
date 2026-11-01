@@ -154,3 +154,14 @@ Commit coerenti per motore, statistica, UI, PWA e audit sul solo ramo V0.3.
 Una sola PR finale verso main se l’API lo consente. In caso di `Forbidden`, il
 ramo remoto e il collegamento per aprire la PR costituiscono la consegna:
 non si dichiara creata una PR senza conferma GitHub. Nessun merge o deployment.
+
+Esito effettivo della consegna: ramo inviato a GitHub; creazione della PR tentata
+con `gh pr create`, ma `https://api.github.com/graphql` risponde `Forbidden`.
+La PR **non è stata creata**. Non è un fallimento dei test dell’app.
+
+- [Ramo remoto](https://github.com/rockythecreator/topkiller_pocket/tree/feat/topkiller-pocket-v0.3-monte-carlo)
+- [Apri la singola PR verso main](https://github.com/rockythecreator/topkiller_pocket/compare/main...feat/topkiller-pocket-v0.3-monte-carlo?expand=1)
+
+Commit principali: `546cce6` motore; `a2cb8f1` statistica; `3384dda` UI;
+`fa91a0e` PWA e QA browser; `275b93d` documentazione. Il commit di consegna
+aggiunge questo esito senza ulteriori modifiche all’app.
